@@ -38,7 +38,12 @@ jobs:
 
       - name: Configure GitHub Pages
         uses: actions/configure-pages@v5
-
+      - name: Find build output
+        run: |
+          pwd
+          ls -la
+          find . -maxdepth 5 -type d -name client
+          find . -maxdepth 4 -type d -name dist
       - name: Upload build
         uses: actions/upload-pages-artifact@v4
         with:
