@@ -32,7 +32,7 @@ export function WhatsAppForm({ id, title, subtitle, fields, buildMessage, submit
   const validate = () => {
     const e: Record<string, string> = {};
     for (const f of fields) {
-      const v = values[f.name].trim();
+      const v = (values[f.name] ?? "").trim();
       if (f.required && !v) e[f.name] = `Please enter ${f.label.toLowerCase()}.`;
       else if (v && f.validate) {
         const msg = f.validate(v);
@@ -46,7 +46,7 @@ export function WhatsAppForm({ id, title, subtitle, fields, buildMessage, submit
   const onSubmit = (ev: FormEvent) => {
     ev.preventDefault();
     if (validate()) setStep("review");
-    else document.getElementById(`${id}-${fields.find((f) => errors[f.name] || !values[f.name].trim())?.name}`)?.focus();
+    else document.getElementById(`${id}-${fields.find((f) => errors[f.name] || !(values[f.name] ?? "").trim())?.name}`)?.focus();
   };
 
   const send = () => {
@@ -67,7 +67,7 @@ export function WhatsAppForm({ id, title, subtitle, fields, buildMessage, submit
             const common = {
               id: fid,
               name: f.name,
-              value: values[f.name],
+              value: values[f.name] ?? "",
               "aria-invalid": err ? true : undefined,
               "aria-describedby": err ? `${fid}-err` : undefined,
               onChange: (e: { target: { value: string } }) => setValues((s) => ({ ...s, [f.name]: e.target.value })),
@@ -108,10 +108,10 @@ export function WhatsAppForm({ id, title, subtitle, fields, buildMessage, submit
         <div className="mt-6" aria-live="polite">
           <p className="text-sm font-semibold text-gold">Please confirm your details</p>
           <dl className="mt-3 divide-y divide-border rounded-xl border border-border">
-            {fields.filter((f) => values[f.name].trim()).map((f) => (
+            {fields.filter((f) => (values[f.name] ?? "").trim()).map((f) => (
               <div key={f.name} className="grid grid-cols-[minmax(0,9rem)_minmax(0,1fr)] gap-3 px-4 py-2.5 text-sm">
                 <dt className="text-muted-foreground">{f.label}</dt>
-                <dd className="break-words text-foreground">{values[f.name].trim()}</dd>
+                <dd className="break-words text-foreground">{(values[f.name] ?? "").trim()}</dd>
               </div>
             ))}
           </dl>
