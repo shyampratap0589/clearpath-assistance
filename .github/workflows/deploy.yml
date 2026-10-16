@@ -22,28 +22,27 @@ jobs:
     defaults:
       run:
         working-directory: clearpath-assistance-main
+
     steps:
-      - name: Get repository files
+      - name: Checkout repository
         uses: actions/checkout@v4
 
-      - name: Set up Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version: 20
+      - name: Setup Bun
+        uses: oven-sh/setup-bun@v2
 
-      - name: Install packages
-        run: npm install --no-audit --no-fund
+      - name: Install dependencies
+        run: bun install --frozen-lockfile
 
       - name: Build website
-        run: npm run build
+        run: bun run build
 
-      - name: Configure Pages
+      - name: Configure GitHub Pages
         uses: actions/configure-pages@v5
 
-      - name: Upload website files
+      - name: Upload build
         uses: actions/upload-pages-artifact@v4
         with:
-          path: ./clearpath-assistance-main/dist/client
+          path: clearpath-assistance-main/dist/client
 
   deploy:
     needs: build
@@ -51,7 +50,8 @@ jobs:
     environment:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}
+
     steps:
-      - name: Publish website
+      - name: Deploy
         id: deployment
         uses: actions/deploy-pages@v4
