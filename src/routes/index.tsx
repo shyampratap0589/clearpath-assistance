@@ -110,7 +110,8 @@ const rtoFields: Field[] = [
   { name: "details", label: "Details", type: "textarea", required: true, placeholder: "What do you need help with?" },
 ];
 
-const challanMsg = (v: Record<string, string>) =>
+type Vals = { [k: string]: string } & Record<"name"|"phone"|"state"|"vehicle"|"challan"|"type"|"notes"|"service"|"ref"|"details", string>;
+const challanMsg = (v: Vals) =>
   [
     "*Traffic Challan Assistance Request — Clear Challan*",
     `Name: ${v.name}`,
@@ -122,7 +123,7 @@ const challanMsg = (v: Record<string, string>) =>
     `Notes: ${v.notes}`,
   ].join("\n");
 
-const rtoMsg = (v: Record<string, string>) =>
+const rtoMsg = (v: Vals) =>
   [
     "*RTO Service Assistance Request — Clear Challan*",
     `Name: ${v.name}`,
@@ -304,10 +305,10 @@ function Index() {
             <SectionHead eyebrow="Get in touch" title="Tell us about your case" text="Choose the form that fits. You'll review your details before WhatsApp opens." />
             <div className="mt-12 grid gap-6 lg:grid-cols-2">
               <div id="challan-form">
-                <WhatsAppForm id="challan" title="Traffic Challan Help" subtitle="For pending, court, Lok Adalat or disputed challans." fields={challanFields} buildMessage={challanMsg} submitLabel="Confirm & open WhatsApp" />
+                <WhatsAppForm id="challan" title="Traffic Challan Help" subtitle="For pending, court, Lok Adalat or disputed challans." fields={challanFields} buildMessage={(v) => challanMsg(v as Vals)} submitLabel="Confirm & open WhatsApp" />
               </div>
               <div id="rto-form">
-                <WhatsAppForm id="rto" title="RTO Service Request" subtitle="For licence, RC, transfer, NOC and other RTO work." fields={rtoFields} buildMessage={rtoMsg} submitLabel="Open WhatsApp with RTO request" />
+                <WhatsAppForm id="rto" title="RTO Service Request" subtitle="For licence, RC, transfer, NOC and other RTO work." fields={rtoFields} buildMessage={(v) => rtoMsg(v as Vals)} submitLabel="Open WhatsApp with RTO request" />
               </div>
             </div>
             <div className="mt-8 grid gap-4 sm:grid-cols-3">
