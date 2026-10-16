@@ -19,19 +19,20 @@ concurrency:
 jobs:
   build:
     runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: clearpath-assistance-main
     steps:
       - name: Get repository files
         uses: actions/checkout@v4
 
-         - name: Set up Node.js
+      - name: Set up Node.js
         uses: actions/setup-node@v4
         with:
           node-version: 20
-          cache: npm
-          cache-dependency-path: clearpath-assistance-main/package-lock.json
 
       - name: Install packages
-        run: npm install
+        run: npm install --no-audit --no-fund
 
       - name: Build website
         run: npm run build
@@ -42,7 +43,7 @@ jobs:
       - name: Upload website files
         uses: actions/upload-pages-artifact@v4
         with:
-          path: ./dist/client
+          path: ./clearpath-assistance-main/dist/client
 
   deploy:
     needs: build
